@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manipular PNG</title>
+</head>
+<body>
+    <h1>Cargar y Manipular PNG</h1>
+    <input type="file" id="fileInput" accept="image/png">
+    <button id="processButton" disabled>Procesar Imagen</button>
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const processButton = document.getElementById('processButton');
+        let imageFile = null;
+
+        // Leer archivo seleccionado
+        fileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file && file.type === '.png') {
+                imageFile = file;
+                processButton.disabled = false;
+                alert('Imagen cargada correctamente.');
+            } else {
+                alert('Por favor selecciona un archivo PNG válido.');
+            }
+        });
+
+        // Procesar archivo PNG
+        processButton.addEventListener('click', () => {
+            if (!imageFile) return;
+
+            const reader = new FileReader();
+
+            // Leer el archivo como un ArrayBuffer
+            reader.onload = (e) => {
+                const arrayBuffer = e.target.result;
+
+                // Ejemplo: Mostrar tamaño del archivo
+                console.log(`Tamaño del archivo: ${arrayBuffer.byteLength} bytes`);
+
+                // Aquí puedes manipular los datos binarios si es necesario
+                // Por ejemplo, convertirlo a base64
+                const base64String = btoa(
+                    new Uint8Array(arrayBuffer)
+                        .reduce((data, byte) => data + String.fromCharCode(byte), '')
+                );
+
+                console.log('Archivo en base64:', base64String);
+                alert('Archivo procesado correctamente.');
+            };
+
+            reader.readAsArrayBuffer(imageFile);
+        });
+    </script>
+</body>
+</html>
