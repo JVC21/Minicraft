@@ -36,7 +36,7 @@ body {
     display: none;
 }
 
-#processButton {
+#downloadButton {
     padding: 10px;
     border: none;
     border: none;
@@ -45,7 +45,7 @@ body {
     color: #CCC;
 }
 
-#processButton:hover {
+#downloadButton:hover {
     background-color: #CCC;
     color: #222;
 }
