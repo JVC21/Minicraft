@@ -8,11 +8,18 @@
 </head>
 <body>
     <div class="main-container">
-        <div class="skin-upload">
-            <label for="skinInput">Arrastra un archivo aquí o haz clic para seleccionar uno</label>
-            <input type="file" id="skinInput" name="skinInput" accept="image/png">
+        <div class="logo-container">
+            <!-- <img src="../assets/logo.png" alt="Minicraft Logo" class="logo"> -->
+            <h1>MiniCraft</h1>
+            <p>Create a miniature pixel-art style avatar from your Minecraft skin!</p>
         </div>
-        <button id="downloadButton" disabled>Descargar Imagen</button>
+        <div class="skin-container">
+            <div id="skinUploader">
+                <label id="skinUploaderLabel" for="skinInput">Click here to select a skin from your storage.</label>
+                <input type="file" id="skinInput" name="skinInput" accept="image/png">
+            </div>
+            <button id="downloadButton" disabled>Download</button>
+        </div>
     </div>
     <script src="../js/main.js"></script>
 </body>

@@ -1,7 +1,10 @@
+const skinUploader = document.getElementById('skinUploader');
+const skinUploaderLabel = document.getElementById('skinUploaderLabel');
 const skinInput = document.getElementById('skinInput');
 const downloadButton = document.getElementById('downloadButton');
 
 let skinFile = null; // original file 64px 64px
+let fileName = null; // original file name without extension
 let miniSkinDataURL = null; // result as data URL
 
 class SkinFace {
@@ -144,10 +147,29 @@ function drawSkin(skinImg) {
     return scale(canvas, 10).toDataURL('image/png');
 }
 
+function resetSkinUploader() {
+    skinUploader.style.backgroundImage = 'none';
+    skinUploader.style.backgroundColor = '#FFF3';
+    skinUploaderLabel.innerText = 'Click here to select a skin from your storage.';
+    skinInput.value = null;
+    skinFile = null;
+    fileName = null;
+    miniSkinDataURL = null;
+    downloadButton.disabled = true;
+}
+
+function showSkinUploaderPreview(url) {
+    skinUploader.style.backgroundImage = url ? `url(${url})` : 'none';
+    skinUploader.style.backgroundColor = '#cccccc';
+    skinUploaderLabel.innerText = '';
+    downloadButton.disabled = false;
+}
+
 skinInput.addEventListener('change', (event) => {
     const file = event.target.files[0];
 
     if (!file || file.type !== 'image/png') {
+        resetSkinUploader();
         alert('Por favor selecciona un archivo PNG válido.');
         return;
     }
@@ -162,14 +184,15 @@ skinInput.addEventListener('change', (event) => {
         skinImg.src = event.target.result;
         skinImg.onload = () => {
             if (skinImg.width != 64 || skinImg.height != 64) {
+                resetSkinUploader();
                 alert('Por favor selecciona un archivo de 64x64 px. [' + skinImg.width + 'x' + skinImg.height + ']');
                 return;
             }
 
             miniSkinDataURL = drawSkin(skinImg);
+            fileName = file.name.split('.').slice(0, -1).join('.');
+            showSkinUploaderPreview(miniSkinDataURL);
         }
-
-        downloadButton.disabled = false;
     };
     reader.readAsDataURL(skinFile);  
 });
@@ -178,6 +201,6 @@ downloadButton.addEventListener('click', () => {
     const link = document.createElement('a');
 
     link.href = miniSkinDataURL;
-    link.download = 'test.png';
+    link.download = `${fileName}_miniavatar.png`;
     link.click();
 });
