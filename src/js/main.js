@@ -1,11 +1,14 @@
+// Global Variables -------------------------------------------------------------------------------
+
 const skinUploader = document.getElementById('skinUploader');
 const skinUploaderLabel = document.getElementById('skinUploaderLabel');
 const skinInput = document.getElementById('skinInput');
 const downloadButton = document.getElementById('downloadButton');
 
 let skinFile = null; // original file 64px 64px
-let fileName = null; // original file name without extension
 let miniSkinDataURL = null; // result as data URL
+
+// Classes ----------------------------------------------------------------------------------------
 
 class SkinFace {
     constructor(x, y, w, h) {
@@ -52,6 +55,8 @@ class SkinLimb {
         this.back  = new SkinFace(x + 12, y + 4, 8, 12);
     }
 }
+
+// Skin Generation --------------------------------------------------------------------------------
 
 const HEAD_1 = new SkinHead(0 , 0 );
 const HEAD_2 = new SkinHead(32, 0 );
@@ -147,34 +152,23 @@ function drawSkin(skinImg) {
     return scale(canvas, 10).toDataURL('image/png');
 }
 
-function resetSkinUploader() {
-    skinUploader.style.backgroundImage = 'none';
-    skinUploader.style.backgroundColor = '#FFF3';
-    skinUploaderLabel.innerText = 'Click here to select a skin from your storage.';
-    skinInput.value = null;
-    skinFile = null;
-    fileName = null;
-    miniSkinDataURL = null;
-    downloadButton.disabled = true;
-}
+// Skin Uploader ----------------------------------------------------------------------------------
 
-function showSkinUploaderPreview(url) {
-    skinUploader.style.backgroundImage = url ? `url(${url})` : 'none';
-    skinUploader.style.backgroundColor = '#cccccc';
-    skinUploaderLabel.innerText = '';
-    downloadButton.disabled = false;
-}
-
-skinInput.addEventListener('change', (event) => {
-    const file = event.target.files[0];
-
-    if (!file || file.type !== 'image/png') {
+function readFile(files) {
+    
+    if (files.length != 1) {
         resetSkinUploader();
-        alert('Por favor selecciona un archivo PNG válido.');
+        alert('Please select only one PNG.');
         return;
     }
 
-    skinFile = file;
+    const file = files[0];
+
+    if (!file || file.type !== 'image/png') {
+        resetSkinUploader();
+        alert('Please select a PNG file.');
+        return;
+    }
 
     const reader = new FileReader();
 
@@ -185,22 +179,74 @@ skinInput.addEventListener('change', (event) => {
         skinImg.onload = () => {
             if (skinImg.width != 64 || skinImg.height != 64) {
                 resetSkinUploader();
-                alert('Por favor selecciona un archivo de 64x64 px. [' + skinImg.width + 'x' + skinImg.height + ']');
+                alert('Please select a 64x64 px PNG. Yours is' + skinImg.width + 'x' + skinImg.height + ' px');
                 return;
             }
 
-            miniSkinDataURL = drawSkin(skinImg);
-            fileName = file.name.split('.').slice(0, -1).join('.');
+            skinFile = file;
+            miniSkinDataURL = drawSkin(skinImg); 
             showSkinUploaderPreview(miniSkinDataURL);
         }
     };
-    reader.readAsDataURL(skinFile);  
+
+    reader.readAsDataURL(file);
+}
+
+function resetSkinUploader() {
+    skinUploader.style.backgroundImage = 'none';
+    skinUploader.classList.remove('skinPreview');
+    skinUploaderLabel.innerText = 'Drag and drop or click here to select a skin from your storage.';
+    skinInput.value = null;
+    skinFile = null;
+    fileName = null;
+    miniSkinDataURL = null;
+    downloadButton.disabled = true;
+}
+
+function showSkinUploaderPreview(url) {
+    skinUploader.style.backgroundImage = url ? `url(${url})` : 'none';
+    skinUploader.classList.add('skinPreview');
+    skinUploaderLabel.innerText = 'Select another skin or click the button below to download.';
+    downloadButton.disabled = false;
+}
+
+// Events Listeners -------------------------------------------------------------------------------
+
+skinUploader.addEventListener('dragover', (event) => {
+    event.preventDefault(); 
+    skinUploader.classList.add('hover');
+});
+
+skinUploader.addEventListener('dragleave', (event) => {
+    event.preventDefault(); 
+    skinUploader.classList.remove('hover');
+});
+
+skinUploader.addEventListener('drop', (event) => {
+    event.preventDefault();
+    skinUploader.classList.remove('hover');
+    readFile(event.dataTransfer.files);
+});
+
+skinInput.addEventListener('change', (event) => {
+    event.preventDefault();
+    skinUploader.classList.remove('hover');
+    readFile(event.target.files);
 });
 
 downloadButton.addEventListener('click', () => {
     const link = document.createElement('a');
 
     link.href = miniSkinDataURL;
-    link.download = `${fileName}_miniavatar.png`;
+    link.download = `${skinFile.name.split('.').slice(0, -1).join('.')}_miniavatar.png`;
     link.click();
 });
+
+window.onload = () => {
+    resetSkinUploader();
+};
+
+// Acknowledgements -------------------------------------------------------------------------------
+// To my beautiful girlfriend and future wife, who always supports me in everything I do.
+// To my family, who always believed in me and taught me to never give up.
+// To Minecrafters, who inspired me to create this project and share it with the world.

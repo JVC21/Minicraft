@@ -24,7 +24,7 @@
 }
 
 body {
-    background: linear-gradient(150deg, #000000 0%, #1e102e 100%) no-repeat fixed;
+    background: linear-gradient(150deg, #000000 0%, #1e102e 50%, #2d1069 100%) no-repeat fixed;
 }
 
 .main-container {
@@ -42,14 +42,15 @@ body {
     h1 {
         font-family: 'mc-title';
         font-size: 6em;
-        color: #FFF;
-        text-shadow: #999 0 0.1em 0;
+        color: white;
+        text-shadow: #999999 0 0.1em 0;
     }
     
     p {
         font-family: 'mc-regular';
         font-size: 2em;
-        color: #FFF;
+        color: white;
+        max-width: 20em;
     }
 }
 
@@ -61,32 +62,34 @@ body {
 }
 
 #skinUploader {
-    width: 300px;
-    height: 300px;
+    width: 360px;
+    height: 360px;
     box-sizing: border-box;
-    background-color: #FFF3;
     background-position: center;
     background-repeat: no-repeat;
-    border: 2px dashed #FFF5;
+    background-color: #ffffff22;
+    border: 2px dashed #ffffff44;
     border-radius: 10px;
     margin: 100px 0 40px 0;
-    padding: 1em;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
     text-align: center;
+    transition: background-color 0.1s ease;
 }
 
 #skinUploader:hover {
-    background-color: #FFF1;
+    background-color: #ffffff07;
 }
 
-#skinUploader label {
-    color: #FFF7;
-    align-content: center;
-    height: 100%;
-    width: 100%;
+#skinUploader.skinPreview {
+    background-color: #cccccc;
+    border: 2px solid #777777;
+}
+
+#skinUploader.skinPreview:hover {
+    background-color: #ffffff07;
+    border: 2px dashed #ffffff44;
 }
 
 #skinUploader input[type="file"] {
@@ -95,9 +98,24 @@ body {
 }
 
 #skinUploaderLabel {
+    box-sizing: border-box;
     font-family: 'mc-italic';
     font-size: 1em;
-    color: #FFF;
+    color: #ffffff77;
+    padding: 1em;
+    height: 100%;
+    width: 100%;
+    align-content: center;
+    cursor: pointer;
+}
+
+.skinPreview #skinUploaderLabel {
+    align-content:flex-end;
+    color: transparent;
+}
+
+.skinPreview:hover #skinUploaderLabel {
+    color: #ffffff77;
 }
 
 #downloadButton {
@@ -109,11 +127,12 @@ body {
     font-size: 1.25em;
     border: none;
     border-radius: 10px;
-    background-color: #222;
-    color: #CCC;
+    background-color: #cccccc;
+    color: #1e102e;
+    transition: 0.1s;
+    cursor: pointer;
 }
 
 #downloadButton:hover {
-    background-color: #CCC;
-    color: #222;
+    transform: scale(1.05);
 }
